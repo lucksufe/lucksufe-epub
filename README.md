@@ -2,10 +2,12 @@
 
 A lightweight, browser-based EPUB reader. No server-side processing — all parsing and rendering happens in the browser.
 
+[中文](README.zh-CN.md)
+
 ## Features
 
 - **Book Library** — Grid view with cover images, reading progress indicators
-- **Two Ways to Add Books** — Upload via browser, or scan a local directory with the included Python script
+- **Two Ways to Add Books** — Upload via browser, or pre-scan a local directory with the included Python script
 - **Full Reading Experience** — Paginated rendering, page-turn click zones (customizable), keyboard navigation
 - **Bookmarks & Highlights** — Save bookmarks, highlight text with color annotations
 - **Reading Progress** — Automatically saves and restores your position
@@ -23,7 +25,7 @@ cd reader
 python3 -m http.server 8000
 ```
 
-Open `http://localhost:8000`, click **Open Local File** or **Add to Library** to upload an EPUB.
+Open `http://localhost:8000`, click **Add to Library** to upload an EPUB.
 
 ### Option 2: Scan Local Directory
 
