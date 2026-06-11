@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="appTitle">EPUB Reader</title>
+  <link rel="stylesheet" href="css/common.css?v=6">
+  <link rel="stylesheet" href="css/library.css?v=6">
+</head>
+<body>
+  <header class="app-header">
+    <h1 class="app-title" data-i18n="appTitle">EPUB Reader</h1>
+    <div class="header-actions">
+      <input type="file" id="file-input" accept=".epub" hidden>
+      <input type="file" id="file-input-local" accept=".epub" hidden>
+      <button class="btn" id="btn-open-local" data-i18n="openLocalFile">Open Local File</button>
+      <button class="btn btn-primary" id="btn-upload" data-i18n="addToLibrary">+ Add to Library</button>
+      <button class="btn btn-lang" id="btn-lang">EN</button>
+      <button class="btn-icon" id="btn-clear-cache" data-i18n-title="clearCache" title="清除缓存">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="book-shelf" id="book-shelf"></main>
+
+  <div class="empty-state" id="empty-state" hidden>
+    <div class="empty-icon">
+      <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+        <rect x="8" y="4" width="48" height="56" rx="4" stroke="#ccc" stroke-width="2"/>
+        <path d="M20 20h24M20 28h24M20 36h16" stroke="#ccc" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <p data-i18n="noBooks">No books yet</p>
+    <p class="empty-hint" data-i18n="noBooksHint">Upload an EPUB file or add books via the scan script</p>
+  </div>
+
+  <template id="book-card-template">
+    <article class="book-card" data-book-id="">
+      <div class="book-cover">
+        <img src="" alt="" loading="lazy">
+        <div class="progress-bar"><div class="progress-fill"></div></div>
+      </div>
+      <div class="book-info">
+        <h3 class="book-title"></h3>
+        <p class="book-author"></p>
+      </div>
+      <button class="btn-delete" data-i18n-title="remove">&times;</button>
+    </article>
+  </template>
+
+  <script src="js/i18n.js?v=6"></script>
+  <script src="js/storage.js?v=6"></script>
+  <script src="js/utils.js?v=6"></script>
+  <script src="js/library.js?v=6"></script>
+  <script src="js/manifest-loader.js?v=6"></script>
+  <script src="js/jszip.min.js?v=6"></script>
+  <script src="js/epub.min.js?v=6"></script>
+  <script src="js/app.js?v=6"></script>
+</body>
+</html>
