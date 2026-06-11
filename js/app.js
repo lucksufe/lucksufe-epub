@@ -2,9 +2,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const shelf = document.getElementById('book-shelf');
   const emptyState = document.getElementById('empty-state');
   const fileInput = document.getElementById('file-input');
-  const fileInputLocal = document.getElementById('file-input-local');
   const btnUpload = document.getElementById('btn-upload');
-  const btnOpenLocal = document.getElementById('btn-open-local');
   const btnLang = document.getElementById('btn-lang');
   const btnClearCache = document.getElementById('btn-clear-cache');
   const template = document.getElementById('book-card-template');
@@ -22,9 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     resetDB();
     renderShelf();
   });
-  btnOpenLocal.addEventListener('click', () => fileInputLocal.click());
   fileInput.addEventListener('change', handleFileSelect);
-  fileInputLocal.addEventListener('change', handleLocalOpen);
 
   // Language toggle
   btnLang.textContent = getLang() === 'zh' ? '中' : 'EN';
@@ -142,58 +138,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  async function handleLocalOpen(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    fileInputLocal.value = '';
-
-    try {
-      const arrayBuffer = await file.arrayBuffer();
-      resetDB();
-
-      const bookId = generateId();
-      const title = file.name.replace(/\.epub$/i, '');
-
-      // Store first
-      await storeEpub(bookId, arrayBuffer, file.name);
-
-      // Then try to extract metadata and cover
-      let author = t('unknown');
-      let coverDataUrl = null;
-      try {
-        const book = ePub(arrayBuffer);
-        await book.ready;
-        const meta = book.packaging.metadata;
-        if (meta.creator) author = meta.creator;
-        try {
-          const coverUrl = await book.coverUrl();
-          if (coverUrl) {
-            const resp = await fetch(coverUrl);
-            const blob = await resp.blob();
-            coverDataUrl = await new Promise((resolve) => {
-              const reader = new FileReader();
-              reader.onload = () => resolve(reader.result);
-              reader.readAsDataURL(blob);
-            });
-            setCover(bookId, coverDataUrl);
-          }
-        } catch {}
-        book.destroy();
-      } catch {}
-
-      addBook({
-        id: bookId,
-        source: 'upload',
-        title,
-        author,
-        coverUrl: null,
-        filePath: null
-      });
-
-      renderShelf();
-      window.location.href = `reader.html?book=${encodeURIComponent(bookId)}`;
-    } catch (err) {
-      alert(t('failedToOpen') + err.message);
-    }
-  }
 });

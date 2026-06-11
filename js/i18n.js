@@ -6,14 +6,12 @@ const I18N = {
     unknown: '未知作者',
 
     // Library
-    openLocalFile: '打开本地文件',
     addToLibrary: '添加到书库',
     noBooks: '还没有书',
     noBooksHint: '上传 EPUB 文件，或通过扫描脚本添加书籍',
     remove: '移除',
     removeConfirm: '确定移除「{{title}}」？',
     failedToLoad: '加载 EPUB 失败：',
-    failedToOpen: '打开 EPUB 失败：',
     clearCache: '清除缓存',
     clearCacheConfirm: '确定清除所有缓存数据？这会删除所有已添加的书籍和阅读进度。',
 
@@ -57,14 +55,12 @@ const I18N = {
     unknown: 'Unknown',
 
     // Library
-    openLocalFile: 'Open Local File',
     addToLibrary: 'Add to Library',
     noBooks: 'No books yet',
     noBooksHint: 'Upload an EPUB file or add books via the scan script',
     remove: 'Remove',
     removeConfirm: 'Remove "{{title}}"?',
     failedToLoad: 'Failed to load EPUB: ',
-    failedToOpen: 'Failed to open EPUB: ',
     clearCache: 'Clear cache',
     clearCacheConfirm: 'Clear all cached data? This will remove all added books and reading progress.',
 
