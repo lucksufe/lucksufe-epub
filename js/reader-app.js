@@ -110,6 +110,63 @@ document.addEventListener('DOMContentLoaded', async () => {
     flow: 'paginated'
   });
 
+  // Keyboard shortcuts
+  function handleKeydown(e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+
+    switch (e.key) {
+      case 'ArrowLeft':
+      case 'ArrowUp':
+      case 'a':
+      case 'A':
+      case 'w':
+      case 'W':
+        e.preventDefault();
+        rendition.prev();
+        break;
+      case 'ArrowRight':
+      case 'ArrowDown':
+      case ' ':
+      case 'd':
+      case 'D':
+      case 's':
+      case 'S':
+        e.preventDefault();
+        rendition.next();
+        break;
+      case 'Escape':
+        closeAllPanels();
+        hideHighlightPopup();
+        const help = document.getElementById('shortcuts-help');
+        if (help) help.remove();
+        break;
+    }
+  }
+
+  document.addEventListener('keydown', handleKeydown);
+
+  // Mouse wheel page turning
+  let wheelTimer = null;
+  function handleWheel(e) {
+    e.preventDefault();
+    if (wheelTimer) return;
+    wheelTimer = setTimeout(() => { wheelTimer = null; }, 200);
+    if (e.deltaY < 0) {
+      rendition.prev();
+    } else if (e.deltaY > 0) {
+      rendition.next();
+    }
+  }
+
+  // Bind wheel to parent document (covers nav button areas too)
+  document.addEventListener('wheel', handleWheel, { passive: false });
+
+  // Bind keyboard and wheel to epub.js iframe content
+  rendition.hooks.content.register((contents) => {
+    contents.document.addEventListener('keydown', handleKeydown);
+    contents.document.addEventListener('wheel', handleWheel, { passive: false });
+  });
+
   // Register themes
   rendition.themes.register('light', {
     body: { background: '#ffffff !important', color: '#1a1a1a !important' }
@@ -187,46 +244,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   btnPrev.addEventListener('click', () => rendition.prev());
   btnNext.addEventListener('click', () => rendition.next());
-
-  // Keyboard shortcuts — handle on both parent document and epub iframe
-  function handleKeydown(e) {
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
-
-    switch (e.key) {
-      case 'ArrowLeft':
-      case 'ArrowUp':
-      case 'a':
-      case 'A':
-      case 'w':
-      case 'W':
-        e.preventDefault();
-        rendition.prev();
-        break;
-      case 'ArrowRight':
-      case 'ArrowDown':
-      case ' ':
-      case 'd':
-      case 'D':
-      case 's':
-      case 'S':
-        e.preventDefault();
-        rendition.next();
-        break;
-      case 'Escape':
-        closeAllPanels();
-        hideHighlightPopup();
-        const help = document.getElementById('shortcuts-help');
-        if (help) help.remove();
-        break;
-    }
-  }
-
-  document.addEventListener('keydown', handleKeydown);
-
-  // Also bind to epub.js iframe content
-  rendition.hooks.content.register((contents) => {
-    contents.document.addEventListener('keydown', handleKeydown);
-  });
 
   // Shortcuts help overlay
   function toggleShortcutsHelp() {
@@ -482,6 +499,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const clickZoneSlider = document.getElementById('click-zone-slider');
   const clickZoneDisplay = document.getElementById('click-zone-display');
   let clickZoneSize = parseInt(settings.clickZone) || 8;
+  // Migrate old px-based value to vw
+  if (clickZoneSize > 25) clickZoneSize = 8;
 
   function applyClickZone(size) {
     btnPrev.style.width = size + 'vw';

@@ -4,8 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title data-i18n="appTitle">EPUB Reader</title>
-  <link rel="stylesheet" href="css/common.css?v=6">
-  <link rel="stylesheet" href="css/library.css?v=6">
+  <script>
+    var APP_VERSION = '18';
+    document.write('<link rel="stylesheet" href="css/common.css?v=' + APP_VERSION + '">');
+    document.write('<link rel="stylesheet" href="css/library.css?v=' + APP_VERSION + '">');
+  </script>
 </head>
 <body>
   <header class="app-header">
@@ -51,13 +54,11 @@
     </article>
   </template>
 
-  <script src="js/i18n.js?v=6"></script>
-  <script src="js/storage.js?v=6"></script>
-  <script src="js/utils.js?v=6"></script>
-  <script src="js/library.js?v=6"></script>
-  <script src="js/manifest-loader.js?v=6"></script>
-  <script src="js/jszip.min.js?v=6"></script>
-  <script src="js/epub.min.js?v=6"></script>
-  <script src="js/app.js?v=6"></script>
+  <script>
+    var scripts = ['js/i18n.js','js/storage.js','js/utils.js','js/library.js','js/manifest-loader.js','js/jszip.min.js','js/epub.min.js','js/app.js'];
+    scripts.forEach(function(s) {
+      document.write('<script src="' + s + '?v=' + APP_VERSION + '"><\/script>');
+    });
+  </script>
 </body>
 </html>
