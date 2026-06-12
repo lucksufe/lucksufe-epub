@@ -168,15 +168,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     dark:  { background: '#1a1a2e', color: '#e0e0e0' }
   };
 
+  function applyThemeToIframes(theme) {
+    const colors = THEME_COLORS[theme];
+    if (!colors) return;
+    const iframe = viewer.querySelector('iframe');
+    if (iframe && iframe.contentDocument && iframe.contentDocument.body) {
+      iframe.contentDocument.body.style.background = colors.background;
+      iframe.contentDocument.body.style.color = colors.color;
+    }
+  }
+
   // Bind keyboard and wheel to epub.js iframe content, and apply theme on page load
   rendition.hooks.content.register((contents) => {
     contents.document.addEventListener('keydown', handleKeydown);
     contents.document.addEventListener('wheel', handleWheel, { passive: false });
-    const colors = THEME_COLORS[settings.theme || 'light'];
-    if (colors) {
-      contents.document.body.style.background = colors.background;
-      contents.document.body.style.color = colors.color;
-    }
+    applyThemeToIframes(settings.theme || 'light');
   });
 
   rendition.themes.register('light', {
@@ -498,17 +504,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   function applyTheme(theme) {
     document.body.className = 'reader-body theme-' + theme;
     rendition.themes.select(theme);
-
-    // epub.js doesn't always clear previous theme overrides on iframes;
-    // force styles directly on rendered content
-    const colors = THEME_COLORS[theme];
-    if (colors) {
-      const contents = rendition.getContents();
-      contents.forEach(c => {
-        c.document.body.style.background = colors.background;
-        c.document.body.style.color = colors.color;
-      });
-    }
+    applyThemeToIframes(theme);
+    // epub.js may re-render after themes.select; re-apply after a frame
+    requestAnimationFrame(() => applyThemeToIframes(theme));
 
     settings.theme = theme;
     saveSettings(settings);
