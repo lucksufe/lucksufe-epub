@@ -161,10 +161,28 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Bind wheel to parent document (covers nav button areas too)
   document.addEventListener('wheel', handleWheel, { passive: false });
 
+  // Theme colors for iframe override
+  const THEME_COLORS = {
+    light: { background: '#ffffff', color: '#1a1a1a' },
+    sepia: { background: '#f4ecd8', color: '#5b4636' },
+    dark:  { background: '#1a1a2e', color: '#e0e0e0' }
+  };
+
+  function updateIframeTheme(theme) {
+    const colors = THEME_COLORS[theme];
+    if (!colors) return;
+    const doc = viewer.querySelector('iframe')?.contentDocument;
+    if (doc?.body) {
+      doc.body.style.setProperty('background', colors.background, 'important');
+      doc.body.style.setProperty('color', colors.color, 'important');
+    }
+  }
+
   // Bind keyboard and wheel to epub.js iframe content
   rendition.hooks.content.register((contents) => {
     contents.document.addEventListener('keydown', handleKeydown);
     contents.document.addEventListener('wheel', handleWheel, { passive: false });
+    updateIframeTheme(settings.theme || 'light');
   });
 
   // Register themes
@@ -487,6 +505,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   function applyTheme(theme) {
     document.body.className = 'reader-body theme-' + theme;
     rendition.themes.select(theme);
+    updateIframeTheme(theme);
+    // epub.js may re-render asynchronously; re-apply after a frame
+    requestAnimationFrame(() => updateIframeTheme(theme));
     settings.theme = theme;
     saveSettings(settings);
 
